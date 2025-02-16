@@ -1,7 +1,10 @@
 import http.server
 import ssl
+import logging
 
 # Inicialização de um servidor localizado no local-host porta 4433
+
+logging.basicConfig(filename="server.log",level=logging.INFO, format="(asctime)s - %(message)s")
 
 class secureHTTPServer(http.server.HTTPServer):
     def __init__(self, server_address, handler_class, certfile, keyfile):
@@ -12,11 +15,12 @@ class secureHTTPServer(http.server.HTTPServer):
         
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
+        logging.info(f"Requisição recebida de: {self.client_address}")
         self.send_response(200)
         self.send_header("Content-Type","text/plain")
         self.end_headers()
         self.wfile.write(b"Conexao Segura!")
-
+        logging.info("Resposta enviada com sucesso.")
 
 def start_server():
     server_address = ("localhost", 4443)
